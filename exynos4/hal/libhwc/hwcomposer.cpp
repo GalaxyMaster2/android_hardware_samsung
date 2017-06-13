@@ -579,7 +579,7 @@ void assignWindows(hwc_context_t *ctx, hwc_display_contents_1_t *contents)
                         ctx->win[nextWindow].rect_info.x = layer.displayFrame.left;
                         ctx->win[nextWindow].rect_info.y = layer.displayFrame.top;
                         ctx->win[nextWindow].rect_info.w = WIDTH(layer.displayFrame);
-                        ctx->win[nextWindow].rect_info.w = HEIGHT(layer.displayFrame);
+                        ctx->win[nextWindow].rect_info.h = HEIGHT(layer.displayFrame);
 
                         window_buffer_allocate(ctx, &ctx->win[nextWindow]);
                     } else {
@@ -1336,6 +1336,18 @@ static void hwc_dump(struct hwc_composer_device_1* dev, char *buff, int buff_len
     android::String8 tmp("");
     tmp.appendFormat("Exynos HWC: force_fb=%d force_gpu=%d bypass_count=%d\n", ctx->force_fb, ctx->force_gpu,
             ctx->bypass_count);
+    tmp.appendFormat(" win | layer | mode |     x/y/w/h       \n");
+    tmp.appendFormat("-----+-------+------+-------------------\n");
+    for (size_t i = 0; i < NUM_HW_WINDOWS; i++) {
+        struct hwc_win_info_t *win = &ctx->win[i];
+        if (win->layer_index == -1) continue;
+        tmp.appendFormat("  %d  |   %d   | %s | %d %d %d %d\n", i, win->layer_index,
+                win->gsc.mode == gsc_map_t::FIMG ? "FIMG" :
+                (win->gsc.mode == gsc_map_t::FIMC ? "FIMC" : "NONE"),
+                win->rect_info.x, win->rect_info.y, win->rect_info.w, win->rect_info.h);
+    }
+
+
     strlcpy(buff, tmp.string(), buff_len);
 }
 

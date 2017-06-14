@@ -167,10 +167,10 @@ struct private_handle_t {
     height(0),
     bpp(0),
     stride(0),
-    ion_client(0),
     yaddr(0),
     uoffset(0),
-    voffset(0)
+    voffset(0),
+    ion_client(0)
     {
         version = sizeof(native_handle);
         numFds = sNumFds;
@@ -196,10 +196,10 @@ struct private_handle_t {
     height(0),
     bpp(0),
     stride(0),
-    ion_client(0),
     yaddr(0),
     uoffset(0),
-    voffset(0)
+    voffset(0),
+    ion_client(0)
     {
         version = sizeof(native_handle);
         numFds = sNumFds;

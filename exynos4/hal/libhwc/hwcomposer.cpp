@@ -448,7 +448,7 @@ void determineBandwidthSupport(hwc_context_t *ctx, hwc_display_contents_1_t *con
                     case gsc_map_t::FIMG:
                         ALOGV("%s: layer %u: mode=FIMG can_compose(%d) fimg_used(%d)", __FUNCTION__, i, can_compose, fimg_used);
 
-                        if (yuv_layer >= 0 && i > yuv_layer) {
+                        if (yuv_layer >= 0 && i > (size_t)yuv_layer) {
                             ++rgb_over_yuv_layer;
 
                             if (rgb_over_yuv_layer > 1) {
@@ -646,6 +646,7 @@ static int perform_fimg(hwc_context_t *ctx, const hwc_layer_1_t &layer, struct h
     enum rotation l_rotate;
     struct private_handle_t *dst_handle = private_handle_t::dynamicCast(win.dst_buf[win.current_buf]);
     uint32_t dst_addr = (uint32_t) dst_handle->ion_memory;
+    (void)ctx;
 
     //should we need to fill whole fimg_cmd struct or can we reuse the old command?
     if (fimg_cmd->op == (enum blit_op) -1) {
@@ -1199,6 +1200,7 @@ static int hwc_blank(struct hwc_composer_device_1 *dev, int dpy, int blank)
 {
     struct hwc_context_t* ctx = (struct hwc_context_t*)dev;
     int fence = 0;
+    (void)dpy;
 
     ALOGV("%s blank=%d", __FUNCTION__, blank);
 
@@ -1247,6 +1249,7 @@ static int hwc_getDisplayConfigs(struct hwc_composer_device_1* dev, int disp,
     uint32_t* configs, size_t* numConfigs)
 {
     ALOGV("%s", __FUNCTION__);
+    (void)dev;
 
     if (*numConfigs == 0)
         return 0;

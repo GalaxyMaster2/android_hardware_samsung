@@ -111,7 +111,7 @@ class FimgApi
 
     protected :
         FimgApi();
-        FimgApi(const FimgApi& rhs) {}
+        FimgApi(const FimgApi& rhs) {(void)rhs;}
         virtual ~FimgApi();
 
     public:
@@ -134,8 +134,10 @@ class FimgApi
 
 #ifdef __cplusplus
 extern "C"
+#else
+struct
 #endif
-struct FimgApi *createFimgApi();
+FimgApi *createFimgApi();
 
 #ifdef __cplusplus
 extern "C"

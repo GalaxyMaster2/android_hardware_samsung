@@ -431,7 +431,7 @@ void determineBandwidthSupport(hwc_context_t *ctx, hwc_display_contents_1_t *con
             }
 
             size_t pixels_needed = WIDTH(layer.displayFrame) * HEIGHT(layer.displayFrame);
-            bool can_compose = true;
+            bool can_compose = false;
             bool gsc_required = false;
 
             do {
@@ -441,6 +441,8 @@ void determineBandwidthSupport(hwc_context_t *ctx, hwc_display_contents_1_t *con
                             __FUNCTION__, i, windows_left ? "no more pixels left" : "no more windows left", pixels_needed, pixels_left);
                     break;
                 }
+                can_compose = false;
+                break;
 
                 enum gsc_map_t::mode mode = layer_requires_process(layer);
 
@@ -645,7 +647,7 @@ static int perform_fimg(hwc_context_t *ctx, const hwc_layer_1_t &layer, struct h
     struct fimg2d_blit *fimg_cmd = &win.fimg_cmd;
     enum rotation l_rotate;
     struct private_handle_t *dst_handle = private_handle_t::dynamicCast(win.dst_buf[win.current_buf]);
-    uint32_t dst_addr = (uint32_t) dst_handle->ion_memory;
+    uint32_t dst_addr = 0;//(uint32_t) dst_handle->ion_memory;
     (void)ctx;
 
     //should we need to fill whole fimg_cmd struct or can we reuse the old command?
@@ -680,11 +682,11 @@ static int perform_fimg(hwc_context_t *ctx, const hwc_layer_1_t &layer, struct h
             formatValueHAL2G2D(src_handle->format, &g2d_format, &pixel_order, &src_bpp);
 
             g2d_src_img->addr.type = ADDR_USER;
-            g2d_src_img->addr.start = src_handle->base;
+            //g2d_src_img->addr.start = src_handle->base;
 
             if (src_bpp == 1) {
                 g2d_src_img->plane2.type = ADDR_USER;
-                g2d_src_img->plane2.start = src_handle->base + src_handle->uoffset;
+                //g2d_src_img->plane2.start = src_handle->base + src_handle->uoffset;
             }
 
             g2d_src_img->width = src_handle->width;
@@ -727,13 +729,13 @@ static int perform_fimg(hwc_context_t *ctx, const hwc_layer_1_t &layer, struct h
             fimg_cmd->dst = g2d_dst_img;
         }
     } else {
-        if (src_handle->base) {
-            fimg_cmd->src->addr.start = src_handle->base;
+//        if (src_handle->base) {
+//            fimg_cmd->src->addr.start = src_handle->base;
 
             if (fimg_cmd->src->plane2.start) {
-                fimg_cmd->src->plane2.start = src_handle->base + src_handle->uoffset;
+//                fimg_cmd->src->plane2.start = src_handle->base + src_handle->uoffset;
             }
-        }
+  //      }
 
         if (dst_addr > 0) {
             fimg_cmd->dst->addr.start = dst_addr;
@@ -826,7 +828,7 @@ static int perform_fimc(hwc_context_t *ctx, const hwc_layer_1_t &layer, struct h
     }
 
     struct private_handle_t *dst_handle = private_handle_t::dynamicCast(win.dst_buf[win.current_buf]);
-    uint32_t dst_addr = (uint32_t) dst_handle->paddr;
+    uint32_t dst_addr = 0;//(uint32_t) dst_handle->paddr;
     int w, h;
 
     if (rotate == 90 || rotate == 270) {
@@ -866,12 +868,12 @@ static int perform_fimc(hwc_context_t *ctx, const hwc_layer_1_t &layer, struct h
         return ret;
     }
 
-    ALOGV("%s: src_handle usage(0x%x) base(0x%x) paddr(0x%x)", __FUNCTION__, src_handle->usage, src_handle->base, src_handle->paddr);
+    //ALOGV("%s: src_handle usage(0x%x) base(0x%x) paddr(0x%x)", __FUNCTION__, src_handle->usage, src_handle->base, src_handle->paddr);
 
     struct fimc_buf buf;
-    buf.base[FIMC_ADDR_Y] = src_handle->paddr;
+/*    buf.base[FIMC_ADDR_Y] = src_handle->paddr;
     buf.base[FIMC_ADDR_CB] = src_handle->paddr + src_handle->uoffset;
-    buf.base[FIMC_ADDR_CR] = src_handle->paddr + src_handle->uoffset + src_handle->voffset;
+    buf.base[FIMC_ADDR_CR] = src_handle->paddr + src_handle->uoffset + src_handle->voffset;*/
 
     ret = v4l2_qbuf(ctx, 0, (unsigned long) &buf);
     if (ret < 0) {
@@ -916,7 +918,7 @@ static void config_overlay(hwc_context_t *ctx, hwc_layer_1_t &layer, s3c_fb_win_
         config_handle(ctx, layer, cfg);
         cfg.format = S3C_FB_PIXEL_FORMAT_BGRA_8888;
 
-        cfg.phys_addr = hnd->paddr;
+        //cfg.phys_addr = hnd->paddr;
 
         if (layer.acquireFenceFd >= 0) {
             if (sync_wait(layer.acquireFenceFd, 1000) < 0)
@@ -935,7 +937,7 @@ static void config_overlay(hwc_context_t *ctx, hwc_layer_1_t &layer, s3c_fb_win_
         // already in BGRA order, so there's no need to overwrite the
         // format
         //cfg.format = S3C_FB_PIXEL_FORMAT_BGRA_8888;
-        cfg.phys_addr = hnd->paddr;
+        cfg.fd = hnd->share_fd;
 
         if (layer.acquireFenceFd >= 0) {
             if (sync_wait(layer.acquireFenceFd, 1000) < 0)
@@ -1002,7 +1004,7 @@ static int post_fimd(hwc_context_t *ctx, hwc_display_contents_1_t* contents)
 
                     config[window].format = S3C_FB_PIXEL_FORMAT_BGRA_8888;
                     private_handle_t* dst_hnd = private_handle_t::dynamicCast(win.dst_buf[win.current_buf]);
-                    config[window].phys_addr = dst_hnd->paddr;
+                    //config[window].phys_addr = dst_hnd->paddr;
                     config[window].offset = 0;
                     config[window].stride = EXYNOS4_ALIGN(config[window].w,16) * 4;
                 }
@@ -1025,7 +1027,7 @@ static int post_fimd(hwc_context_t *ctx, hwc_display_contents_1_t* contents)
 
                     config[window].format = S3C_FB_PIXEL_FORMAT_BGRA_8888;
                     private_handle_t* dst_hnd = private_handle_t::dynamicCast(win.dst_buf[win.current_buf]);
-                    config[window].phys_addr = dst_hnd->paddr;
+                    //config[window].phys_addr = dst_hnd->paddr;
                     config[window].offset = 0;
                     config[window].stride = EXYNOS4_ALIGN(config[window].w,16) * 4;
                 }

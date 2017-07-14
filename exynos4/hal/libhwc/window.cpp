@@ -106,9 +106,9 @@ void dump_fb_win_cfg(struct s3c_fb_win_config_data &cfg)
 
     for (size_t i = 0; i < NUM_HW_WINDOWS; i++) {
         if (cfg.config[i].state != s3c_fb_win_config::S3C_FB_WIN_STATE_DISABLED) {
-            ALOGV("win%d state(%d) (%d,%d) (%d,%d) format(%d) blending(%d) phys_addr(0x%x) offset(0x%x)",
+            ALOGV("win%d state(%d) (%d,%d) (%d,%d) format(%d) blending(%d) fd(%d) phys_addr(0x%x) offset(0x%x)",
                     i, cfg.config[i].state, cfg.config[i].x, cfg.config[i].y, cfg.config[i].w, cfg.config[i].h,
-                    cfg.config[i].format, cfg.config[i].blending, cfg.config[i].phys_addr, cfg.config[i].offset);
+                    cfg.config[i].format, cfg.config[i].blending, cfg.config[i].fd, cfg.config[i].phys_addr, cfg.config[i].offset);
         }
     }
 }

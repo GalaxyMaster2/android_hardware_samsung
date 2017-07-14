@@ -260,6 +260,11 @@ static int jpeg_v4l2_qbuf(int fd, struct jpeg_buf *buf)
             v4l2_buf.m.planes[i].m.userptr = (unsigned long)buf->start[i];
             v4l2_buf.m.planes[i].length = buf->length[i];
         }
+    } else if (buf->memory == V4L2_MEMORY_DMABUF) {
+        for (i = 0; i < buf->num_planes; i++) {
+            v4l2_buf.m.planes[i].m.fd = buf->fd[i];
+            v4l2_buf.m.planes[i].length = buf->length[i];
+        }
     }
 
     ret = ioctl(fd, VIDIOC_QBUF, &v4l2_buf);

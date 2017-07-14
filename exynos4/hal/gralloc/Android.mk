@@ -26,7 +26,7 @@ LOCAL_MODULE_RELATIVE_PATH := hw
 LOCAL_MODULE := gralloc.$(TARGET_BOARD_PLATFORM)
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_SHARED_LIBRARIES := liblog libcutils libGLES_mali libGLESv1_CM libion libhardware
+LOCAL_SHARED_LIBRARIES := liblog libcutils libGLESv1_CM libion libhardware
 
 LOCAL_C_INCLUDES := system/core/include/
 
@@ -34,7 +34,6 @@ LOCAL_CFLAGS := -DLOG_TAG=\"gralloc\" -DGRALLOC_16_BITS -DPLATFORM_SDK_VERSION=$
 
 LOCAL_SRC_FILES := \
 	gralloc_module.cpp \
-	alloc_device.cpp \
-	framebuffer_device.cpp
+	alloc_device.cpp
 
 include $(BUILD_SHARED_LIBRARY)

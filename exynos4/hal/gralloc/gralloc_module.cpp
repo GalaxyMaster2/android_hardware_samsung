@@ -26,7 +26,6 @@
 
 #include "gralloc_priv.h"
 #include "alloc_device.h"
-#include "framebuffer_device.h"
 
 #if GRALLOC_ARM_UMP_MODULE
 #include <ump/ump_ref_drv.h>
@@ -49,11 +48,6 @@ static int gralloc_device_open(const hw_module_t *module, const char *name, hw_d
 	{
 		status = alloc_device_open(module, name, device);
 	}
-	else if (!strncmp(name, GRALLOC_HARDWARE_FB0, MALI_GRALLOC_HARDWARE_MAX_STR_LEN))
-	{
-		status = framebuffer_device_open(module, name, device);
-	}
-
 	return status;
 }
 

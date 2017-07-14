@@ -273,6 +273,10 @@ static int jpeg_v4l2_qbuf(int fd, struct jpeg_buf *buf)
         return -1;
     }
 
+	for (i = 0; i < buf->num_planes; i++) {
+		buf->bytesused[i] = v4l2_buf.m.planes[i].bytesused;
+	}
+
     return ret;
 }
 

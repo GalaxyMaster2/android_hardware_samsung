@@ -70,6 +70,7 @@ struct jpeg_buf {
     int     num_planes;
     void    *start[JPEG_MAX_PLANE_CNT];
     int     length[JPEG_MAX_PLANE_CNT];
+    int     bytesused[JPEG_MAX_PLANE_CNT]; // set by kernel
     int     fd[JPEG_MAX_PLANE_CNT]; // dmabuf only
     enum    v4l2_memory    memory;
     enum    v4l2_buf_type  buf_type;    // Caller need not set this

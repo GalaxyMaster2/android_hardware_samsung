@@ -19,6 +19,7 @@
 #include <dlfcn.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 
 #include <cutils/log.h>
 
@@ -122,7 +123,19 @@ static uint64_t fingerprint_get_auth_id(struct fingerprint_device __unused *dev)
 
 static int fingerprint_cancel(struct fingerprint_device __unused *dev)
 {
-    return bauth_handle->ss_fingerprint_cancel();
+    fingerprint_msg_t *cancel_msg;
+    int ret = 0;
+
+    ret = bauth_handle->ss_fingerprint_cancel();
+
+    cancel_msg = (fingerprint_msg_t *)malloc(sizeof(fingerprint_msg_t));
+    memset(cancel_msg, 0, sizeof(fingerprint_msg_t));
+
+    cancel_msg->type = FINGERPRINT_ERROR;
+    cancel_msg->data.error = FINGERPRINT_ERROR_CANCELED;
+
+    original_notify(cancel_msg);
+    return ret;
 }
 
 static int fingerprint_remove(struct fingerprint_device __unused *dev, uint32_t gid, uint32_t fid)
@@ -172,7 +185,7 @@ static int fingerprint_open(const hw_module_t* module, const char *id, hw_device
     }
 
     dev->common.tag = HARDWARE_DEVICE_TAG;
-    dev->common.version = FINGERPRINT_MODULE_API_VERSION_2_0;
+    dev->common.version = FINGERPRINT_MODULE_API_VERSION_2_1;
     dev->common.module = (struct hw_module_t*) module;
     dev->common.close = fingerprint_close;
 
@@ -202,7 +215,7 @@ static struct hw_module_methods_t fingerprint_module_methods = {
 fingerprint_module_t HAL_MODULE_INFO_SYM = {
     .common = {
         .tag                = HARDWARE_MODULE_TAG,
-        .module_api_version = FINGERPRINT_MODULE_API_VERSION_2_0,
+        .module_api_version = FINGERPRINT_MODULE_API_VERSION_2_1,
         .hal_api_version    = HARDWARE_HAL_API_VERSION,
         .id                 = FINGERPRINT_HARDWARE_MODULE_ID,
         .name               = "Samsung TZ Fingerprint HAL",

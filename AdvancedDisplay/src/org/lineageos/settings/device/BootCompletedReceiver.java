@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cyanogenmod.settings.device;
+package org.lineageos.settings.device;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,6 +26,6 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         mDNIeScenario.restore(context);
-        mDNIeNegative.restore(context);
+        mDNIeAccessibility.restore(context);
     }
 }

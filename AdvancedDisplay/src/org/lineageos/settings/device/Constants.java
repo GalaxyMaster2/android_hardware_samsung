@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-package com.cyanogenmod.settings.device;
+package org.lineageos.settings.device;
 
-import android.os.Bundle;
-
-import com.android.settingslib.drawer.SettingsDrawerActivity;
-
-public class AdvancedDisplayActivity extends SettingsDrawerActivity {
-
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        getFragmentManager().beginTransaction().replace(R.id.content_frame,
-                new AdvancedDisplayFragment()).commit();
-    }
+public class Constants {
+    static final String KEY_MDNIE_SCENARIO = "mdnie_scenario";
+    static final String KEY_MDNIE_ACCESSIBILITY = "mdnie_accessibility";
 }

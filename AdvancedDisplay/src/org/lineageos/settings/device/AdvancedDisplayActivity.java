@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package com.cyanogenmod.settings.device;
+package org.lineageos.settings.device;
 
-public class Constants {
-    static final String KEY_MDNIE_SCENARIO = "mdnie_scenario";
-    static final String KEY_MDNIE_NEGATIVE = "mdnie_negative";
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+
+public class AdvancedDisplayActivity extends PreferenceActivity {
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        getFragmentManager().beginTransaction().replace(android.R.id.content,
+                new AdvancedDisplayFragment()).commit();
+    }
 }

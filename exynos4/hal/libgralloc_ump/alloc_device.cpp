@@ -655,7 +655,7 @@ static int alloc_device_free(alloc_device_t* dev, buffer_handle_t handle)
     }
 
     if (hnd->flags & private_handle_t::PRIV_FLAGS_USES_ION) {
-        if (hnd->ion_memory > 0)
+        if (hnd->ion_memory > (void *)0)
             munmap(hnd->ion_memory, hnd->size);
         ion_free(hnd->fd);
     }

@@ -44,4 +44,6 @@ LOCAL_C_INCLUDES := $(SEC_OMX_INC)/khronos \
 	$(SEC_OMX_COMPONENT)/common \
 	$(SEC_OMX_COMPONENT)/video/dec
 
+LOCAL_LDLIBS := -llog
+
 include $(BUILD_STATIC_LIBRARY)

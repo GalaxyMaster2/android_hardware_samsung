@@ -26,6 +26,10 @@ LOCAL_CFLAGS += -DS3D_SUPPORT
 endif
 endif
 
+ifeq ($(TARGET_SOC),exynos4x12)
+LOCAL_CFLAGS += -DEXYNOS4_ENHANCEMENTS
+endif
+
 LOCAL_STATIC_LIBRARIES :=
 LOCAL_SHARED_LIBRARIES := libcutils libutils \
 	libui \
